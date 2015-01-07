@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+// $Id: secsignidprofile.xml,v 1.3 2014/12/15 15:00:14 titus Exp $
+
+Definition file for the SecSignID login module for Joomla 1.6.
+
+* @copyright    Copyright (C) 2014 SecSign Technologies Inc. All rights reserved.
+* @license        GNU General Public License version 2 or later; see LICENSE.txt.
+-->
+<extension version="1.7" type="plugin" group="user">
+    <name>User - Profile - SecSignID</name> <!-- translation of PLG_USER_PROFILE_SECSIGNID does not work here -->
+    <author>SecSign Technologies Inc.</author>
+    <creationDate>April 2013</creationDate>
+    <copyright>(C) 2011, 2012, 2013 SecSign Technologies Inc. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>info@secsign.com</authorEmail>
+    <authorUrl>www.secsign.com/</authorUrl>
+    <version>1.0.3</version>
+    <description>Allows users to assign a SecSign ID to their profile.</description> <!-- translation of PLG_USER_PROFILE_SECSIGNID_XML_DESCRIPTION does not work here -->
+
+    <files>
+        <filename plugin="secsignidprofile">secsignidprofile.php</filename>
+        <filename>index.html</filename>
+        <filename>de-DE.plg_user_secsignid_profile.ini</filename>
+        <filename>en-GB.plg_user_secsignid_profile.ini</filename>
+        <filename>en-GB.plg_user_secsignid_profile.sys.ini</filename>
+        <folder>profiles</folder>
+    </files>
+
+    <languages>
+        <language tag="de-DE">de-DE.plg_user_secsignid_profile.ini</language>
+        <language tag="en-GB">en-GB.plg_user_secsignid_profile.ini</language>
+        <language tag="en-GB">en-GB.plg_user_secsignid_profile.sys.ini</language>
+    </languages>
+</extension>

@@ -15,7 +15,19 @@ If you seek for more information about about two-factor authentication have a lo
 * You can also integrate the SecSign ID as inhouse solution into your existing infrastructure (on request with licensed service and maintenance contract)
 
 There are also APIs for PHP, Ruby, Perl, Python and Java as well as plugins and modules for Wordpress and Drupal.
-A complete overview about available plugins and APIs could be found at <https://www.secsign.com/plugins/>.
+A complete overview about available plugins and APIs can be found at <https://www.secsign.com/plugins/>.
+
+## SecSign ID features
+
+* Quick and easy to use single sign-on with 2048 bit high security
+* Eliminates password chaos and security concerns
+* No mobile number, credit card or time-consuming registration required.
+* No need for long cryptical passwords, time-consuming retyping of codes from SMS or reading of QR codes
+* High security and strong cryptography on all levels
+
+## Technical details:
+
+More information at at <https://www.secsign.com/security-id/> and at <https://www.secsign.com/two-factor-authentication/>.
 
 **Tutorial**
 

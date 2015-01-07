@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+// $Id: secsignidbackend.xml,v 1.3 2014/12/15 15:50:07 titus Exp $
+
+-->
+
+<extension version="1.7" type="plugin" group="system" method="upgrade">
+    <name>Backend Authentication - SecSignID</name>
+    <author>SecSign Technologies Inc.</author>
+    <creationDate>November 2014</creationDate>
+    <copyright>(C) 2011 - 2014 SecSign Technologies Inc. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>info@secsign.com</authorEmail>
+    <authorUrl>www.secsign.com</authorUrl>
+    <version>1.1.0</version>
+    <description>This plug-in allows users to authenticate against joomla admin backend using smart phone running SecSign App.</description>
+
+	<files>
+		<filename plugin="secsignidbackend">secsignidbackend.php</filename>
+		<filename>index.html</filename>
+		<folder>tmpl</folder>
+        <folder>js</folder>
+	</files>
+
+    <languages>
+        <language tag="en-GB">en-GB.plg_system_secsignid_backend.ini</language>
+        <language tag="en-GB">en-GB.plg_system_secsignid_backend.sys.ini</language>
+        <language tag="de-DE">de-DE.plg_system_secsignid_backend.ini</language>
+        <language tag="de-DE">de-DE.plg_system_secsignid_backend.sys.ini</language>
+    </languages>
+
+</extension>

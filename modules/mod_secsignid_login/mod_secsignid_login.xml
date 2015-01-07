@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// $Id: mod_secsignid_login.xml,v 1.6 2015/01/06 17:58:11 titus Exp $
+
+Definition file for the SecSignID login module for Joomla 3.x
+
+* @copyright    Copyright (C) 2014 SecSign Technologies Inc. All rights reserved.
+* @license        GNU General Public License version 2 or later; see LICENSE.txt.
+-->
+<extension type="module" version="1.4.0" client="site" method="upgrade">
+    <name>SecSign ID Login</name> <!-- translation of MOD_SECSIGNID_LOGIN does work here -->
+    <author>SecSign Technologies Inc.</author>
+    <creationDate>April 2013</creationDate>
+    <copyright>(C) 2011 - 2015 SecSign Technologies Inc. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>info@secsign.com</authorEmail>
+    <authorUrl>www.secsign.com</authorUrl>
+    <version>1.2.0</version>
+    <description>MOD_SECSIGNID_LOGIN_XML_DESCRIPTION</description>
+    <files>
+        <filename module="mod_secsignid_login">mod_secsignid_login.php</filename>
+        <folder>tmpl</folder>
+        <folder>css</folder>
+        <folder>js</folder>
+        <folder>bridge</folder>
+        <filename>helper.php</filename>
+        <filename>index.html</filename>
+    </files>
+
+    <languages>
+        <language tag="en-GB">en-GB.mod_secsignid_login.ini</language>
+        <language tag="en-GB">en-GB.mod_secsignid_login.sys.ini</language>
+        <language tag="de-DE">de-DE.mod_secsignid_login.ini</language>
+        <language tag="de-DE">de-DE.mod_secsignid_login.sys.ini</language>
+    </languages>
+
+
+</extension>
