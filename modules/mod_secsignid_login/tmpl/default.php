@@ -1,5 +1,5 @@
 <?php
-// $Id: default.php,v 1.6 2015/01/06 17:25:34 titus Exp $
+// $Id: default.php,v 1.7 2015/01/08 15:30:43 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -178,10 +178,10 @@ $view = JRequest::getVar('view', 0);
                 var checkSessionStateTimerId = -1;
 
                 function ajaxCheckForSessionState(){
-                	if($("#secsign .secsign_row button").attr("checking")){
+                	if(jQuery("#secsign .secsign_row button").attr("checking")){
             			return;
             		}
-            		$("#secsign .secsign_row button").attr({"checking": "1", "disabled" : "disabled"});
+            		jQuery("#secsign .secsign_row button").attr({"checking": "1", "disabled" : "disabled"});
             		
                     var secSignIDApi = new SecSignIDApi({posturl:"<?php echo JUri::base(true)?>/modules/mod_secsignid_login/bridge/signin-bridge.php"});
                     secSignIDApi.getAuthSessionState(
@@ -190,8 +190,8 @@ $view = JRequest::getVar('view', 0);
                         '<?php echo $secsignid_params['authsessionid'] ?>',
                         function rMap(responseMap) {
                             if(responseMap) {
-                            	$("#secsign .secsign_row button").removeAttr("checking");
-                            	$("#secsign .secsign_row button").removeAttr("disabled");
+                            	jQuery("#secsign .secsign_row button").removeAttr("checking");
+                            	jQuery("#secsign .secsign_row button").removeAttr("disabled");
                             	
                                 // check if response map contains error message or if authentication state could not be fetched from server.
                                 if ("errormsg" in responseMap) {

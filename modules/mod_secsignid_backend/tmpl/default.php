@@ -1,5 +1,5 @@
 <?php
-// $Id: default.php,v 1.4 2015/01/06 17:25:34 titus Exp $
+// $Id: default.php,v 1.5 2015/01/08 15:30:42 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -160,10 +160,10 @@ if ($type == 'logout') : ?>
                 var checkSessionStateTimerId = -1;
 
                 function ajaxCheckForSessionState(){
-                	if($("#secsign .secsign_row button").attr("checking")){
+                	if(jQuery("#secsign .secsign_row button").attr("checking")){
             			return;
             		}
-            		$("#secsign .secsign_row button").attr({"checking": "1", "disabled" : "disabled"});
+            		jQuery("#secsign .secsign_row button").attr({"checking": "1", "disabled" : "disabled"});
             		
                     var secSignIDApi = new SecSignIDApi({posturl:"<?php echo JUri::base(true)?>/modules/mod_secsignid_backend/bridge/signin-bridge.php"});
                     secSignIDApi.getAuthSessionState(
@@ -171,8 +171,8 @@ if ($type == 'logout') : ?>
                         '<?php echo $secsignid_params['requestid'] ?>',
                         '<?php echo $secsignid_params['authsessionid'] ?>',
                         function rMap(responseMap) {
-                        	$("#secsign .secsign_row button").removeAttr("checking");
-                        	$("#secsign .secsign_row button").removeAttr("disabled");
+                        	jQuery("#secsign .secsign_row button").removeAttr("checking");
+                        	jQuery("#secsign .secsign_row button").removeAttr("disabled");
                         	
                             if(responseMap) {
                                 // check if response map contains error message or if authentication state could not be fetched from server.
