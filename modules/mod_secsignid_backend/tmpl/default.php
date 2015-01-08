@@ -1,5 +1,5 @@
 <?php
-// $Id: default.php,v 1.5 2015/01/08 15:30:42 titus Exp $
+// $Id: default.php,v 1.6 2015/01/08 17:36:09 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -201,7 +201,7 @@ if ($type == 'logout') : ?>
                                 if ((authSessionStatus == SESSION_STATE_AUTHENTICATED) || (authSessionStatus == SESSION_STATE_DENIED) || (authSessionStatus == SESSION_STATE_EXPIRED)
                                     || (authSessionStatus == SESSION_STATE_SUSPENDED) || (authSessionStatus == SESSION_STATE_INVALID) || (authSessionStatus == SESSION_STATE_CANCELED)) {
                                     window.clearInterval(checkSessionStateTimerId);
-                                    jQuery("button[name='check_authsession']").click();
+                                    jQuery("button[name='check_authsession_button']").click();
                                 }
                             }
                         }
@@ -213,8 +213,8 @@ if ($type == 'logout') : ?>
                 }
                 
                 function handleSecSignIdSessionButtons(form_name) {
-            		document.getElementById('check_authsession').disabled=true;
-            		document.getElementById('cancel_authsession').disabled=true;
+            		document.getElementById('check_authsession_button').disabled=true;
+            		document.getElementById('cancel_authsession_button').disabled=true;
             	
             		document.forms[form_name].submit();
             	
@@ -272,11 +272,12 @@ if ($type == 'logout') : ?>
                           action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>"
                           method="post" id="login-form-secsignid">
                         <div class="cancel-button">
-                            <button style="width:100%;" class="button_secsignid_login" value="1"
-                                    name="cancel_authsession"
-                                    id="cancel_authsession"
+                            <button style="width:100%;" class="button_secsignid_login"
+                                    name="cancel_authsession_button"
+                                    id="cancel_authsession_button"
                                     type="submit"
                                     onclick="return handleSecSignIdSessionButtons('secsignid_cancel');"><?php echo JText::_('MOD_SECSIGNID_CANCEL'); ?></button>
+                            <input type="hidden" name="cancel_authsession" id="cancel_authsession" value="1"/>
                             <input type="hidden" name="option" value="com_secsignid"/>
                             <input type="hidden" name="task" value="cancelAuthSession"/>
                             <input type="hidden" name="return" value="<?php echo $return; ?>"/>
@@ -301,10 +302,11 @@ if ($type == 'logout') : ?>
                           method="post" id="login-form-secsignid">
                         <fieldset class="userdata secsignid_login">
                             <button style="width:100%;float:right;" class="button_secsignid_login blue" value="1"
-                                    name="check_authsession" 
-                                    id="check_authsession" 
+                                    name="check_authsession_button" 
+                                    id="check_authsession_button" 
                                     type="submit"
-                                    onclick="return handleSecSignIdSessionButtons('secsignid_cancel');"><?php echo 'OK' ?></button>
+                                    onclick="return handleSecSignIdSessionButtons('secsignid_ok');"><?php echo 'OK' ?></button>
+                            <input type="hidden" name="check_authsession" id="check_authsession" value="1"/>
                             <input type="hidden" name="option" value="com_secsignid"/>
                             <input type="hidden" name="task" value="getAuthSessionState"/>
                             <input type="hidden" name="return" value="<?php echo $return; ?>"/>

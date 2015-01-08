@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-// $Id: mod_secsignid_backend.xml,v 1.4 2015/01/08 15:33:10 titus Exp $
+// $Id: mod_secsignid_backend.xml,v 1.5 2015/01/08 17:36:13 titus Exp $
 
 Definition file for the SecSignID login module for Joomla 3.x
 
@@ -15,7 +15,7 @@ Definition file for the SecSignID login module for Joomla 3.x
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@secsign.com</authorEmail>
     <authorUrl>www.secsign.com</authorUrl>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <description>MOD_SECSIGNID_BACKEND_XML_DESCRIPTION</description>
     <files>
         <filename module="mod_secsignid_backend">mod_secsignid_backend.php</filename>
