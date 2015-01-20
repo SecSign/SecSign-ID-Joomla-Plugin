@@ -1,5 +1,5 @@
 <?php
-// $Id: default.php,v 1.6 2015/01/08 17:36:09 titus Exp $
+// $Id: default.php,v 1.7 2015/01/20 11:34:22 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -341,10 +341,12 @@ if ($type == 'logout') : ?>
 
         ?>
         <script type="text/javascript">
-            function checkSecSignIDInput() {
+            function checkSecSignIdInput() {
                 var secsignid = document.forms["login-form-secsignid"].username.value;
                 if (secsignid == undefined || secsignid.length < 1) {
                     alert("<?php echo JText::_('MOD_SECSIGNID_LOGIN_VALUE_MISSING'); ?>");
+                    document.forms["login-form-secsignid"].username.focus();
+                    
                     return false;
                 }
                 return true;
@@ -372,7 +374,7 @@ if ($type == 'logout') : ?>
 
 
             <form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post"
-                  id="login-form-secsignid" name="login-form-secsignid" onsubmit="return checkSecSignIDInput();">
+                  id="login-form-secsignid" name="login-form-secsignid" onsubmit="return checkSecSignIdInput();">
                 <fieldset class="userdata secsignid_login">
                     <div class="secsign_row" id="form-login-username">
                         <label
@@ -391,7 +393,7 @@ if ($type == 'logout') : ?>
                     <div class="secsign_row">
                         <button id="secsignid_login" class="button_secsignid_login blue" value="<?php echo 'Login' ?>"
                                 name="Submit"
-                                type="submit" onclick="return handleSecSignIdLoginButtons();"><?php echo JText::_('JLOGIN'); ?></button>
+                                type="submit" onclick="if(checkSecSignIdInput()){return handleSecSignIdLoginButtons();} return false;"><?php echo JText::_('JLOGIN'); ?></button>
 
                         <button id="secsignid_info" onclick="window.location.href = 'https://www.secsign.com/sign-up/'"
                                 class="button_secsignid_login" name="goto" value="signup"
