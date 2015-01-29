@@ -7,7 +7,7 @@ Use the SecSign ID two-factor authentication on your Joomla site to enable easy 
 SecSign ID - The mobile way to log into web sites
 
 SecSign ID is a plugin for real two-factor authentication (2FA) for Joomla sites. 2FA adds another layer of security to your website by using a second token. In this case the physical token is your smartphone. 
-If you seek for more information about about two-factor authentication have a look at <https://www.secsign.com/two-factor-authentication/>.
+If you seek for more information about about two-factor authentication have a look at <https://www.secsign.com/two-factor-authentication/> or at the SecSign blog <https://www.secsign.com/two-factor-authentication-vs-two-step-verification/>.
 
 * Integrate SecSign ID into your own Joomla site in less than one minute.
 * You and your users can also use SecSign ID to visit securely other web sites (e.g. <https://portal.secsign.com> for true professional messaging and cloud sharing.)
@@ -29,7 +29,9 @@ A complete overview about available plugins and APIs can be found at <https://ww
 
 More information at at <https://www.secsign.com/security-id/> and at <https://www.secsign.com/two-factor-authentication/>.
 
-**Tutorial**
+## Information and Tutorial:
 
-See <https://www.secsign.com/joomla-tutorial/>
+More information is available at the Joomla extension site for SecSign ID at <http://extensions.joomla.org/extensions/extension/secsign>
+Or have a look at the Joomla SecSign ID tutorial website at <https://www.secsign.com/joomla-tutorial/>
 
+For more detailed information about two-factor-authentication (2FA) or two-step-authentication please have a look at the SecSign blog entry <https://www.secsign.com/two-factor-authentication-vs-two-step-verification/>.
