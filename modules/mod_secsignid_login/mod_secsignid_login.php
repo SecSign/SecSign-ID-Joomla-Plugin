@@ -1,5 +1,5 @@
 <?php
-// $Id: mod_secsignid_login.php,v 1.2 2014/12/01 15:04:28 titus Exp $
+// $Id: mod_secsignid_login.php,v 1.3 2015/04/16 13:36:50 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;

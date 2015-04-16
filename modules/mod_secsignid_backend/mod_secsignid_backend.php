@@ -1,5 +1,5 @@
 <?php
-// $Id: mod_secsignid_backend.php,v 1.2 2014/12/15 15:50:07 titus Exp $
+// $Id: mod_secsignid_backend.php,v 1.3 2015/02/25 18:08:08 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -56,7 +56,7 @@ if($secsignmode == 'secsignid' OR $secsignmode == 'secsignidorjoomla') {
     $secsignid = $input->get('username', '', 'STR');
     $cancel = $input->get('cancel_authsession', '', 'STR');
     $ok = $input->get('check_authsession', '', 'STR');
-
+/*
     if ($secsignid != "") {
 
         //check if secsign user is in DB
@@ -118,8 +118,8 @@ if($secsignmode == 'secsignid' OR $secsignmode == 'secsignidorjoomla') {
         $redirect_url = $app->input->get('redirect', 'index.php');
         $app->redirect($redirect_url);
     }
-
-
+*/
+$ok = true;
     if ($ok) {
         try {
             // create a new session instance which is needed to check its status

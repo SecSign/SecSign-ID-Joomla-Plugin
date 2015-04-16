@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+// $Id: default.xml,v 1.1 2014/12/15 15:49:09 titus Exp $
+
+-->
+<metadata>
+	<layout title="COM_SECSIGNID">
+		<message>
+			<![CDATA[COM_SECSIGNID]]>
+		</message>
+	</layout>
+</metadata>

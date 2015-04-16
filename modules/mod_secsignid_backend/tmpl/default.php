@@ -1,5 +1,5 @@
 <?php
-// $Id: default.php,v 1.7 2015/01/20 11:34:22 titus Exp $
+// $Id: default.php,v 1.12 2015/04/16 13:36:50 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -12,414 +12,501 @@ jimport('joomla.application.component.helper');
  * Asks the user for his SecSign ID, displays the authentication session access pass created by the SecPKI server and
  * waits for the user to confirm/accept the auth session.
  *
- * This file is based on the default Joomla 1.6.3 login form.
- *
  * @copyright    Copyright (C) 2011, 2012, 2013 SecSign Technologies Inc. All rights reserved.
  * @license        GNU General Public License version 2 or later; see LICENSE.txt.
  */
 
 JHtml::_('behavior.keepalive');
+?>
 
-/**
- * add module own CSS stylesheet
- */
+<script>
+    //Parameters
+    var url = "";
+    var title = "<?php echo JComponentHelper::getParams('com_secsignid')->get('secsign_backend_servicename'); ?>";
+    var secsignPluginPath = '<?php echo JURI::base() ?>../media/com_secsignid/';
+    var apiurl = '<?php echo JURI::base() ?>../media/com_secsignid/bridge/signin-bridge.php';
+    var errormsg = "<?php echo JText::_('COM_SECSIGNID_FE_20'); ?>";
+    var noresponse = "<?php echo JText::_('COM_SECSIGNID_FE_21'); ?>";
+    var nosecsignid = "<?php echo JText::_('COM_SECSIGNID_FE_19'); ?>";
+    var secsignid = "";
+
+    //setup default values if empty
+    if(url ==""){ url = document.URL; }
+    if(title ==""){ title = document.title; }
+</script>
+<?php
+// add public CSS stylesheet and JS files
 $document = JFactory::getDocument();
-$document->addStyleSheet(JURI::base() . 'modules/mod_secsignid_backend/css/mod_secsignid_backend.css');
-$document->addScript(JURI::base() . 'modules/mod_secsignid_backend/js/SecSignIDApi.js');
+JHtml::_('stylesheet', JUri::base() . '../media/com_secsignid/css/secsignid_layout.css');
+JHtml::_('script', JUri::base() . '../media/com_secsignid/bridge/SecSignIDApi.js');
+JHtml::_('script', JUri::base() . '../media/com_secsignid/bridge/secsignfunctionsBE.js');
 $view = JRequest::getVar('view', 0);
 ?>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 <script>
-    //JS for responsive layout
-    window.onload = function () {
-        var width = document.getElementById("secsign").offsetWidth;
-        responsive(width);
-    };
+jQuery.noConflict();
 
-    window.addEventListener('resize', function () {
-        var width = document.getElementById("secsign").offsetWidth;
-        responsive(width);
-    });
+//Load SecSignID API
+jQuery.getScript(secsignPluginPath+"bridge/SecSignIDApi.js", function () {
 
-    function responsive(width) {
-        var login = document.getElementById("secsignid_login");
-        var info = document.getElementById("secsignid_info");
-        var cancel = document.getElementById("secsignid_cancel");
-        var ok = document.getElementById("secsignid_ok");
-        var accesspass_bg = document.getElementById("secsignid_accesspass_graphic");
-        var accesspass = document.getElementById("secsignid_accesspass");
-
-        if (width >= 250) {
-            //add classes for big layout
-            if (login) login.className = "button_secsignid_login blue button_secsignid_big";
-            if (info) info.className = "button_secsignid_login button_secsignid_big button_secsignid_right";
-            if (cancel) cancel.className = "button_secsignid_form button_secsignid_big";
-            if (ok) ok.className = "button_secsignid_form button_secsignid_big button_secsignid_right";
-
-        } else {
-            if (login) login.className = "button_secsignid_login blue";
-            if (info) info.className = "button_secsignid_login";
-            if (cancel) cancel.className = "button_secsignid_form";
-            if (ok) ok.className = "button_secsignid_form";
-        }
-
-        if (width >= 180) {
-            if (accesspass_bg) accesspass_bg.className = "accesspass_secsignid_login";
-            if (accesspass) accesspass.className = "accesspass_icon_secsignid_login";
-        } else {
-            if (accesspass_bg) accesspass_bg.className = "secsignid_no_graphic";
-            if (accesspass) accesspass.className = "accesspass_icon_secsignid_login accesspass_icon_secsignid_login_small";
-        }
-    }
-</script>
-
-
-
-<?php
-if ($type == 'logout') : ?>
-    <div id="secsign">
-        <form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post"
-              id="login-form-secsignid">
-            <?php if ($params->get('greeting')) : ?>
-                <div class="login-greeting secsignid_login">
-                    <?php if ($params->get('name') == 0) : {
-                        echo JText::sprintf('MOD_SECSIGNID_LOGIN_HINAME', $user->get('name'));
-                    } else : {
-                        echo JText::sprintf('MOD_SECSIGNID_LOGIN_HINAME', $user->get('username'));
-                    } endif; ?>
-                </div>
-                <br/>
-            <?php endif; ?>
-            <div class="logout-button">
-                <button class="button_secsignid_login secsignid_logout" value="<?php echo 'Logout' ?>" name="Submit"
-                        type="submit"><?php echo JText::_('JLOGOUT'); ?></button>
-                <input type="hidden" name="option" value="com_users"/>
-                <input type="hidden" name="task" value="user.logout"/>
-                <input type="hidden" name="return" value="<?php echo $return; ?>"/>
-                <?php echo JHtml::_('form.token'); ?>
-            </div>
-        </form>
-    </div>
-
-<?php else : ?>
-
-    <?php
-    jimport('joomla.error.log');
-
-    if (!isset($secsignid_params) || $secsignid_params == NULL) {
-        // the array $secsignid_params is taken in mod_secsignid_admin.php
-        // check the array to avoid nullpointer exceptions
-        $secsignid_params = array();
+    //hide Joomla Logins
+    jQuery("#element-box").css('display','none');
+    if(jQuery("#section-box").length){
+        //hide Joomla Box J2.5
+        jQuery("#secsignidplugincontainer").appendTo("#content-box").css('margin','40px 0');
+        jQuery("#secsignid-login-secsignid").appendTo("#form-login").css('margin','20px 0');
+    } else {
+        //hide Joomla Box J3.x
+        jQuery("#secsignidplugincontainer").appendTo("#content");
+        jQuery("#secsignid-login-secsignid").appendTo("#form-login").css('margin','20px 0');
     }
 
-    // first check if there is any kind of error
-    if (isset($secsignid_params['error'])) {
-        echo "<font color=\"#FF0000\">" . $secsignid_params['error'] . "</font><br />";
-        //echo JText::sprintf('JGLOBAL_AUTH_FAILED', $secsignid_params['error']);
-    }
+    //polling
+    var timeTillAjaxSessionStateCheck = 3700;
+    var checkSessionStateTimerId = -1;
 
-    if ($session->get('errormsg') == "denied") {
-        echo "<font color=\"#FF0000\">" . JText::sprintf('MOD_SECSIGNID_ACCESSPASS_DENIED') . "</font><br />";
-        $session->set('errormsg', null);
-    }
+    function ajaxCheckForSessionState() {
+        var secSignIDApi = new SecSignIDApi({posturl: apiurl});
+        secSignIDApi.getAuthSessionState(
+            jQuery("input[name='secsigniduserid']").val(),
+            jQuery("input[name='secsignidrequestid']").val(),
+            jQuery("input[name='secsignidauthsessionid']").val(),
+            function rMap(responseMap) {
+                if (responseMap) {
+                    // check if response map contains error message or if authentication state could not be fetched from server.
+                    if ("errormsg" in responseMap) {
+                        //enable buttons
+                        jQuery("#secloginbtn").prop("disabled", false);
+                        //clear interval
+                        window.clearInterval(checkSessionStateTimerId);
+                        return;
+                    } else if (!("authsessionstate" in responseMap)) {
+                        return;
+                    }
+                    if (responseMap["authsessionstate"] == undefined || responseMap["authsessionstate"].length < 1) {
+                        // got answer without an auth session state. this is not parsable and will throw the error UNKNOWN
+                        //enable buttons
+                        jQuery("#secloginbtn").prop("disabled", false);
+                        //clear interval
+                        window.clearInterval(checkSessionStateTimerId);
+                        return;
+                    }
 
+                    // everything okay. authentication state can be checked
+                    var authSessionStatus = parseInt(responseMap["authsessionstate"]);
+                    var SESSION_STATE_NOSTATE = 0;
+                    var SESSION_STATE_PENDING = 1;
+                    var SESSION_STATE_EXPIRED = 2;
+                    var SESSION_STATE_AUTHENTICATED = 3;
+                    var SESSION_STATE_DENIED = 4;
+                    var SESSION_STATE_SUSPENDED = 5;
+                    var SESSION_STATE_CANCELED = 6;
+                    var SESSION_STATE_FETCHED = 7;
+                    var SESSION_STATE_INVALID = 8;
 
-    // check if there is a message
-    if (isset($secsignid_params['msg'])) {
-        echo $secsignid_params['msg'] . "<br /><br />";
-    }
+                    //3 Login, 24568 show error, 017 do nothing
+                    if (authSessionStatus == SESSION_STATE_AUTHENTICATED) {
+                        //Log In
+                        window.clearInterval(checkSessionStateTimerId);
+                        jQuery("#secsignid-accesspass-form").submit();
+                    } else if ((authSessionStatus == SESSION_STATE_DENIED) || (authSessionStatus == SESSION_STATE_EXPIRED)
+                        || (authSessionStatus == SESSION_STATE_SUSPENDED) || (authSessionStatus == SESSION_STATE_INVALID) || (authSessionStatus == SESSION_STATE_CANCELED)) {
+                        //Show Error
+                        window.clearInterval(checkSessionStateTimerId);
+                        jQuery("#secsignid-page-accesspass").fadeOut(
+                            function () {
+                                var secsignid = jQuery("input[name='secsigniduserid']").val();
+                                var requestId = jQuery("input[name = 'secsignidrequestid']").val();
+                                var authsessionId = jQuery("input[name = 'secsignidauthsessionid']").val();
 
-    // if the user has already entered a SecSign ID in the step before the SecSign ID component will send him 
-    // back here with this variable containing the SecSign ID he entered
-    if (isset($secsignid_params['secsignid']) && isset($secsignid_params['requestid']) && isset($secsignid_params['authsessionid'])) {
-        if (isset($secsign_params['error']) || !function_exists("curl_init")) {
-            if (!function_exists("curl_init")) {
-                echo "<font color=\"#FF0000\">The php extension 'curl' is not installed or enabled. Therefor SecSign ID Server cannot be reached. Please install the 'curl' extension.</font><br />";
+                                //error message
+                                var errormsg ="";
+                                if (authSessionStatus == SESSION_STATE_DENIED){
+                                    errormsg = "SecSign ID session denied.";
+                                } else if (authSessionStatus == SESSION_STATE_EXPIRED){
+                                    errormsg = "SecSign ID session expired.";
+                                } else if (authSessionStatus == SESSION_STATE_SUSPENDED){
+                                    errormsg = "SecSign ID session suspended.";
+                                } else if (authSessionStatus == SESSION_STATE_INVALID) {
+                                    errormsg = "SecSign ID session invalid.";
+                                } else if (authSessionStatus == SESSION_STATE_CANCELED) {
+                                    errormsg = "SecSign ID session canceled.";
+                                }
+
+                                // check if response map contains message.
+                                if ("message" in responseMap) {
+                                    errormsg = responseMap["message"];
+                                }
+
+                                clearSecsignForm();
+                                jQuery("#secsignid-page-login").fadeIn();
+                                jQuery("#secsignid-error").html(errormsg).fadeIn();
+                                jQuery("#secloginbtn").prop("disabled", false);
+                                var secSignIDApi = new SecSignIDApi({posturl: apiurl});
+                                secSignIDApi.cancelAuthSession(secsignid, requestId, authsessionId, function rMap(responseMap) {
+                                });
+                            }
+                        );
+                    }
+                }
             }
-            ?>
+        );
+    }
 
-            <form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post"
-                  id="login-form-secsignid">
-                <div class="cancel-button">
-                    <button style="width:90%" class="button_secsignid_login" value="<?php echo 'Cancel' ?>"
-                            name="Submit" type="submit"><?php echo JText::_('MOD_SECSIGNID_CANCEL'); ?></button>
-                    <input type="hidden" name="option" value="com_users"/>
-                    <input type="hidden" name="task" value="user.logout"/>
-                    <input type="hidden" name="return" value="<?php echo $return; ?>"/>
-                    <?php echo JHtml::_('form.token'); ?>
-                </div>
-            </form>
-        <?php
-        } else {
-            ?>
+    //polling timeout
+    for (var timerId = 1; timerId < 5000; timerId++) {
+        clearTimeout(timerId);
+    }
 
-            <!-- polling -->
-            <script>
-                var timeTillAjaxSessionStateCheck = 3700;
-                var checkSessionStateTimerId = -1;
+    jQuery(document).ready(function (event) {
+        clearSecsignForm();
 
-                function ajaxCheckForSessionState(){
-                	if(jQuery("#secsign .secsign_row button").attr("checking")){
-            			return;
-            		}
-            		jQuery("#secsign .secsign_row button").attr({"checking": "1", "disabled" : "disabled"});
-            		
-                    var secSignIDApi = new SecSignIDApi({posturl:"<?php echo JUri::base(true)?>/modules/mod_secsignid_backend/bridge/signin-bridge.php"});
-                    secSignIDApi.getAuthSessionState(
-                        '<?php echo $secsignid_params['secsignid'] ?>',
-                        '<?php echo $secsignid_params['requestid'] ?>',
-                        '<?php echo $secsignid_params['authsessionid'] ?>',
-                        function rMap(responseMap) {
-                        	jQuery("#secsign .secsign_row button").removeAttr("checking");
-                        	jQuery("#secsign .secsign_row button").removeAttr("disabled");
-                        	
-                            if(responseMap) {
-                                // check if response map contains error message or if authentication state could not be fetched from server.
-                                if ("errormsg" in responseMap) {
-                                    return;
-                                } else if (!("authsessionstate" in responseMap)) {
-                                    return;
-                                }
-                                if (responseMap["authsessionstate"] == undefined || responseMap["authsessionstate"].length < 1) {
-                                    // got answer without an auth session state. this is not parsable and will throw the error UNKNOWN
-                                    return;
-                                }
+        //check if cookie available for secsign or password login
+        if(docCookies.getItem('secsignJoomlaBackendlogin')==1){
+            if(jQuery("#section-box").length){
+                //Joomla Box J2.5
+                jQuery("#secsignidplugincontainer").fadeOut(
+                    function () {
+                        jQuery("#element-box").fadeIn();
+                    }
+                );
+            } else {
+                //Joomla Box J3.x
+                jQuery("#secsignidplugincontainer").fadeOut(
+                    function () {
+                        jQuery("#element-box").fadeIn();
+                    }
+                );
+            }
+        }
 
-                                // everything okay. authentication state can be checked...
-                                var authSessionStatus = parseInt(responseMap["authsessionstate"]);
-                                var SESSION_STATE_NOSTATE = 0;
-                                var SESSION_STATE_PENDING = 1;
-                                var SESSION_STATE_EXPIRED = 2;
-                                var SESSION_STATE_AUTHENTICATED = 3;
-                                var SESSION_STATE_DENIED = 4;
-                                var SESSION_STATE_SUSPENDED = 5;
-                                var SESSION_STATE_CANCELED = 6;
-                                var SESSION_STATE_FETCHED = 7;
-                                var SESSION_STATE_INVALID = 8;
+        /* Button & Page logic */
+        jQuery("#secsignid-pw").click(function (event) {
+            event.preventDefault();
+            docCookies.setItem('secsignJoomlaBackendlogin', '1', 2592000);
+            if(jQuery("#section-box").length){
+                //Joomla Box J2.5
+                jQuery("#secsignidplugincontainer").fadeOut(
+                    function () {
+                        jQuery("#element-box").fadeIn();
+                    }
+                );
+            } else {
+                //Joomla Box J3.x
+                jQuery("#secsignidplugincontainer").fadeOut(
+                    function () {
+                        jQuery("#element-box").fadeIn();
+                    }
+                );
+            }
+        });
 
-                                if ((authSessionStatus == SESSION_STATE_AUTHENTICATED) || (authSessionStatus == SESSION_STATE_DENIED) || (authSessionStatus == SESSION_STATE_EXPIRED)
-                                    || (authSessionStatus == SESSION_STATE_SUSPENDED) || (authSessionStatus == SESSION_STATE_INVALID) || (authSessionStatus == SESSION_STATE_CANCELED)) {
-                                    window.clearInterval(checkSessionStateTimerId);
-                                    jQuery("button[name='check_authsession_button']").click();
+        jQuery("#secsignid-login-secsignid").click(function (event) {
+            event.preventDefault();
+            jQuery("#element-box").fadeOut(
+                function () {
+                    jQuery("#secsignidplugincontainer").fadeIn();
+                    docCookies.setItem('secsignJoomlaBackendlogin', '0', 2592000);
+                }
+            );
+        });
+
+        jQuery("#secsignid-infobutton").click(function (event) {
+            event.preventDefault();
+            jQuery("#secsignid-page-login").fadeOut(
+                function () {
+                    jQuery("#secsignid-page-info").fadeIn();
+                }
+            );
+        });
+
+        jQuery("#secsignid-info-secsignid").click(function (event) {
+            event.preventDefault();
+            jQuery("#secsignid-page-info").fadeOut(
+                function () {
+                    jQuery("#secsignid-page-login").fadeIn();
+                }
+            );
+        });
+
+        jQuery("#secsignid-questionbutton").click(function (event) {
+            event.preventDefault();
+            jQuery("#secsignid-page-accesspass").fadeOut(
+                function () {
+                    jQuery("#secsignid-page-question").fadeIn();
+                }
+            );
+        });
+
+        jQuery("#secsignid-question-secsignid").click(function (event) {
+            event.preventDefault();
+            jQuery("#secsignid-page-question").fadeOut(
+                function () {
+                    jQuery("#secsignid-page-accesspass").fadeIn();
+                }
+            );
+        });
+
+        /* Cancel Session */
+        jQuery("#secsignid-cancelbutton").click(function (event) {
+            event.preventDefault();
+            jQuery("#secsignid-page-accesspass").fadeOut(
+                function () {
+                    var secsignid = jQuery("input[name='secsigniduserid']").val();
+                    var requestId = jQuery("input[name = 'secsignidrequestid']").val();
+                    var authsessionId = jQuery("input[name = 'secsignidauthsessionid']").val();
+
+                    clearSecsignForm();
+                    jQuery("#secsignid-page-login").fadeIn();
+                    jQuery("#secloginbtn").prop("disabled", false);
+
+                    var secSignIDApi = new SecSignIDApi({posturl: apiurl});
+                    secSignIDApi.cancelAuthSession(secsignid, requestId, authsessionId, function rMap(responseMap) {
+                    });
+                }
+            );
+        });
+
+        /* Accesspass */
+        jQuery("#secsignid-loginform").submit(function (event) {
+
+                //disable button to prevent frozen state
+                jQuery("#secloginbtn").prop("disabled", true);
+
+                var requestid = '';
+                if (requestid == '') {
+                    //load Accesspass with preloader
+                    event.preventDefault();
+                    secsignid = jQuery("input[name='secsigniduserid']").val();
+
+                    if (secsignid == "") {
+                        //back to login screen
+                        jQuery("#secsignid-page-accesspass").fadeOut(
+                            function () {
+                                //enable buttons
+                                jQuery("#secloginbtn").prop("disabled", false);
+                                //clear interval
+                                window.clearInterval(checkSessionStateTimerId);
+                                jQuery("#secsignid-page-login").fadeIn();
+                            }
+                        );
+                        jQuery("#secsignid-error").html(nosecsignid).fadeIn();
+                    } else {
+
+                        //if remember me is clicked, set cookie otherwise delete
+                        if (jQuery('#rememberme').is(':checked')) {
+                            docCookies.setItem('secsignRememberMe', secsignid, 2592000);
+                        } else {
+                            docCookies.removeItem('secsignRememberMe');
+                        }
+
+                        jQuery("#secsignid-page-login").fadeOut(
+                            function () {
+                                jQuery("#secsignid-page-accesspass").fadeIn();
+                                jQuery("#accesspass-secsignid").text(secsignid);
+                            }
+                        );
+
+                        //request auth session
+                        var secsignid = jQuery("input[name='secsigniduserid']").val();
+                        var secSignIDApi = new SecSignIDApi({posturl: apiurl});
+                        secSignIDApi.requestAuthSession(secsignid, title, url, '', function rMap(responseMap) {
+
+                            if ("errormsg" in responseMap) {
+                                //back to login screen
+                                jQuery("#secsignid-page-accesspass").fadeOut(
+                                    function () {
+                                        jQuery("#secsignid-page-login").fadeIn();
+                                    }
+                                );
+                                jQuery("#secsignid-error").html(responseMap["errormsg"]).fadeIn();
+                            } else {
+                                if ("authsessionicondata" in responseMap && responseMap["authsessionicondata"] != '') {
+                                    //fill hidden form
+                                    jQuery("input[name='secsigniduserid']").val(responseMap["secsignid"]);
+                                    jQuery("input[name='secsignidauthsessionid']").val(responseMap["authsessionid"]);
+                                    jQuery("input[name='secsignidrequestid']").val(responseMap["requestid"]);
+                                    jQuery("input[name='secsignidserviceaddress']").val(responseMap["serviceaddress"]);
+                                    jQuery("input[name='secsignidservicename']").val(responseMap["servicename"]);
+
+                                    //show Accesspass
+                                    jQuery("#secsignid-accesspass-img").fadeOut(
+                                        function () {
+                                            jQuery("#secsignid-accesspass-img").attr('src', 'data:image/png;base64,' + responseMap["authsessionicondata"]).fadeIn();
+                                        }
+                                    );
+
+                                    //activate polling
+                                    checkSessionStateTimerId = window.setInterval(function () {
+                                        ajaxCheckForSessionState();
+                                    }, timeTillAjaxSessionStateCheck);
+
+
+                                } else {
+                                    //back to login screen
+                                    jQuery("#secsignid-page-accesspass").fadeOut(
+                                        function () {
+                                            jQuery("#secsignid-page-login").fadeIn();
+                                            jQuery("#secloginbtn").prop("disabled", false);
+                                        }
+                                    );
+                                    jQuery("#secsignid-error").html(noresponse).fadeIn();
                                 }
                             }
-                        }
-                    );
-                }
-
-                for (var timerId = 1; timerId < 5000; timerId++) {
-                    clearTimeout(timerId);
-                }
-                
-                function handleSecSignIdSessionButtons(form_name) {
-            		document.getElementById('check_authsession_button').disabled=true;
-            		document.getElementById('cancel_authsession_button').disabled=true;
-            	
-            		document.forms[form_name].submit();
-            	
-            		return true;
-            	}
-
-                jQuery(document).ready(function () {
-
-                    checkSessionStateTimerId = window.setInterval(function () {
-                        ajaxCheckForSessionState();
-
-                    }, timeTillAjaxSessionStateCheck);
-                });
-
-            </script>
-            <!-- end polling -->
-
-            <style type="text/css">#form-login {
-                    display: none;
-                };
-            </style>
-
-            <div id="secsign">
-                <p style="text-align:center;font-weight:bold;">
-                    <?php echo JText::sprintf('MOD_SECSIGNID_ACCESSPASS_DESCR', '<i>' . $secsignid_params['secsignid'] . '</i>'); ?>
-                </p>
-
-                <div id="secsignid_accesspass_graphic" class="accesspass_secsignid_login"
-                     style="background:transparent url(<?php echo JURI::root(); ?>media/com_secsignid/images/accesspass_bg.png) no-repeat scroll;background-size:180px 240px;">
-                    <img id="secsignid_accesspass" class="accesspass_icon_secsignid_login"
-                         src="data:image/png;base64,<?php echo $secsignid_params['authsessionicondata']; ?>"
-                         class="passicon">
-                </div>
-                <p style="text-align: center;">
-                    <?php
-                    $errormsg = $session->get('errormsg');
-                    switch ($errormsg) {
-                        case "pending":
-                            echo '<p class="secsignid_error">' . JText::_('MOD_SECSIGNID_ACCESSPASS_PENDING') . '</p>';
-                            break;
-                        case "denied":
-                            echo '<p class="secsignid_error">' . JText::_('MOD_SECSIGNID_ACCESSPASS_DENIED') . '</p>';
-                            break;
-                        case "noresponse":
-                            echo '<p class="secsignid_error">' . JText::_('MOD_SECSIGNID_ACCESSPASS_NORESPONSE') . '</p>';
-                            break;
-                        default:
-                            echo '<p>' . JText::_('MOD_SECSIGNID_ACCESSPASS_HELP');
+                        });
                     }
-                    ?>
-                </p>
-
-                <div class="secsign_row">
-                    <form class="button_secsignid_form" id="secsignid_cancel"
-                          action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>"
-                          method="post" id="login-form-secsignid">
-                        <div class="cancel-button">
-                            <button style="width:100%;" class="button_secsignid_login"
-                                    name="cancel_authsession_button"
-                                    id="cancel_authsession_button"
-                                    type="submit"
-                                    onclick="return handleSecSignIdSessionButtons('secsignid_cancel');"><?php echo JText::_('MOD_SECSIGNID_CANCEL'); ?></button>
-                            <input type="hidden" name="cancel_authsession" id="cancel_authsession" value="1"/>
-                            <input type="hidden" name="option" value="com_secsignid"/>
-                            <input type="hidden" name="task" value="cancelAuthSession"/>
-                            <input type="hidden" name="return" value="<?php echo $return; ?>"/>
-
-                            <input type="hidden" name="secsigniduserid"
-                                   value="<?php echo $secsignid_params['secsignid']; ?>"/>
-                            <input type="hidden" name="secsignidauthsessionid"
-                                   value="<?php echo $secsignid_params['authsessionid']; ?>"/>
-                            <input type="hidden" name="secsignidrequestid"
-                                   value="<?php echo $secsignid_params['requestid']; ?>"/>
-                            <input type="hidden" name="secsignidservicename"
-                                   value="<?php echo $secsignid_params['servicename']; ?>"/>
-                            <input type="hidden" name="secsignidserviceaddress"
-                                   value="<?php echo $secsignid_params['serviceaddress']; ?>"/>
-                            <input type="hidden" name="secsignidauthsessionicondata"
-                                   value="<?php echo $secsignid_params['authsessionicondata']; ?>"/>
-                            <?php echo JHtml::_('form.token'); ?>
-                        </div>
-                    </form>
-                    <form class="button_secsignid_form" id="secsignid_ok"
-                          action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>"
-                          method="post" id="login-form-secsignid">
-                        <fieldset class="userdata secsignid_login">
-                            <button style="width:100%;float:right;" class="button_secsignid_login blue" value="1"
-                                    name="check_authsession_button" 
-                                    id="check_authsession_button" 
-                                    type="submit"
-                                    onclick="return handleSecSignIdSessionButtons('secsignid_ok');"><?php echo 'OK' ?></button>
-                            <input type="hidden" name="check_authsession" id="check_authsession" value="1"/>
-                            <input type="hidden" name="option" value="com_secsignid"/>
-                            <input type="hidden" name="task" value="getAuthSessionState"/>
-                            <input type="hidden" name="return" value="<?php echo $return; ?>"/>
-
-                            <input type="hidden" name="secsigniduserid"
-                                   value="<?php echo $secsignid_params['secsignid']; ?>"/>
-                            <input type="hidden" name="secsignidauthsessionid"
-                                   value="<?php echo $secsignid_params['authsessionid']; ?>"/>
-                            <input type="hidden" name="secsignidrequestid"
-                                   value="<?php echo $secsignid_params['requestid']; ?>"/>
-                            <input type="hidden" name="secsignidservicename"
-                                   value="<?php echo $secsignid_params['servicename']; ?>"/>
-                            <input type="hidden" name="secsignidserviceaddress"
-                                   value="<?php echo $secsignid_params['serviceaddress']; ?>"/>
-                            <input type="hidden" name="secsignidauthsessionicondata"
-                                   value="<?php echo $secsignid_params['authsessionicondata']; ?>"/>
-                            <?php echo JHtml::_('form.token'); ?>
-                        </fieldset>
-                    </form>
-                    <div class="clear"></div>
-                </div>
-            </div>
-        <?php
-        }
-    } else {
-        // values for SecSignIDApi.requestAuthSession()
-        $secSignIdRequestor = $params->get('requestor');
-        if (NULL == $secSignIdRequestor) {
-            $secSignIdRequestor = $_SERVER['HTTP_HOST']; //"SecSign ID login for Joomla";
-        }
-        $secSignIdRequestor = $_SERVER['HTTP_HOST'];
-
-        ?>
-        <script type="text/javascript">
-            function checkSecSignIdInput() {
-                var secsignid = document.forms["login-form-secsignid"].username.value;
-                if (secsignid == undefined || secsignid.length < 1) {
-                    alert("<?php echo JText::_('MOD_SECSIGNID_LOGIN_VALUE_MISSING'); ?>");
-                    document.forms["login-form-secsignid"].username.focus();
-                    
-                    return false;
                 }
-                return true;
             }
-            
-            function handleSecSignIdLoginButtons() {
-            	document.getElementById('secsignid_login').disabled=true;
-            	document.getElementById('secsignid_info').disabled=true;
-            	
-            	document.forms['login-form-secsignid'].submit();
-            	
-            	return true;
-            }
-        </script>
+        );
+    });
+});
+</script>
 
-        <div id="secsign">
+<?php
+//show php or joomla error message for secsign
+$session = JFactory::getSession();
+$message="";
+$message = $session->get('secsignerror');
+if($message!=""){
+    $message = "<div id='secsignid-error-php'>".$message."</div>";
+}
+$session->set('secsignerror', "");
+?>
 
+<div id="secsignidplugincontainer">
+    <div id="secsignidplugin">
+        <!-- Page Login -->
+        <div id="secsignid-page-login">
+            <div class="secsignidlogo"></div>
+            <div id="secsignid-error"></div>
+            <?php echo $message ?>
+            <form id="secsignid-loginform">
+                <div class="form-group">
+                    <input type="text" class="form-control login-field" value="" placeholder="SecSign ID"
+                           id="login-secsignid" name="secsigniduserid">
+                    <label class="login-field-icon fui-user" for="login-secsignid"></label>
+                </div>
 
-            <?php
-            $pretext = JComponentHelper::getParams('com_secsignid')->get('secsign_backend_pretext');
-            if ($pretext) {
-                echo "<p>" . $pretext . "</p>";
-            }
-            ?>
-
-
-            <form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post"
-                  id="login-form-secsignid" name="login-form-secsignid" onsubmit="return checkSecSignIdInput();">
-                <fieldset class="userdata secsignid_login">
-                    <div class="secsign_row" id="form-login-username">
-                        <label
-                            for="modlgn-username"><?php echo JText::_('MOD_SECSIGNID_LOGIN_VALUE_USERNAME') ?></label>
-                        <input id="modlgn-username" type="text" name="username" class="inputbox" value="" size="18"
-                               autofocus/>
-                    </div>
-                    <?php if (JPluginHelper::isEnabled('system', 'remember')) : ?>
-                        <div class="secsign_row" id="form-login-remember">
-                            <label
-                                for="modlgn-remember"><?php echo JText::_('MOD_SECSIGNID_LOGIN_REMEMBER_ME') ?></label>
-                            <input id="modlgn-remember" type="checkbox" name="remember" class="inputbox" value="yes"/>
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="secsign_row">
-                        <button id="secsignid_login" class="button_secsignid_login blue" value="<?php echo 'Login' ?>"
-                                name="Submit"
-                                type="submit" onclick="if(checkSecSignIdInput()){return handleSecSignIdLoginButtons();} return false;"><?php echo JText::_('JLOGIN'); ?></button>
-
-                        <button id="secsignid_info" onclick="window.location.href = 'https://www.secsign.com/sign-up/'"
-                                class="button_secsignid_login" name="goto" value="signup"
-                                type="button"><?php echo JText::_('MOD_SECSIGNID_SIGNUP'); ?></button>
-
-                    </div>
-                    <input type="hidden" name="option" value="com_secsignid"/>
-                    <input type="hidden" name="task" value="requestAuthSession"/>
-                    <input type="hidden" name="requesting_service" value="<?php echo $secSignIdRequestor ?>"/>
-                    <input type="hidden" name="return" value="<?php echo $return; ?>"/>
-                    <?php echo JHtml::_('form.token'); ?>
-                </fieldset>
-
+                <div id="secsignid-checkbox">
+		        <span>
+	                <input id="rememberme" name="rememberme" type="checkbox" value="rememberme" checked>
+	                <label for="rememberme"><?php echo JText::_('COM_SECSIGNID_FE_1'); ?></label>
+	            </span>
+                </div>
+                <button id="secloginbtn" type="submit">Log in</button>
             </form>
+            <div class="secsignid-login-footer">
+                <a href="#" class="infobutton" id="secsignid-infobutton">Info</a>
+                <a href="#" class="linktext" id="secsignid-pw"><?php echo JText::_('COM_SECSIGNID_FE_2'); ?></a>
 
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <!-- Page Password Login -->
+        <div id="secsignid-page-pw">
+            <div class="secsignidlogo"></div>
+            <form>
+                <div class="form-group">
+                    <input type="text" class="form-control login-field" value="" placeholder="Username"
+                           id="login-user">
+                    <label class="login-field-icon fui-user" for="login-secsignid"></label>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" class="form-control login-field" value="" placeholder="Password"
+                           id="login-pw">
+                    <label class="login-field-icon fui-user" for="login-secsignid"></label>
+                </div>
+                <button id="pwdloginbtn" type="submit">Log in</button>
+            </form>
+            <div class="secsignid-login-footer">
+                <a class="linktext" href="#" id="secsignid-login-secsignid"><?php echo JText::_('COM_SECSIGNID_FE_3'); ?></a>
+
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <!-- Page Info SecSign Login -->
+        <div id="secsignid-page-info">
+            <div class="secsignidlogo secsignidlogo-left"></div>
+            <h3 id="headinginfo"><?php echo JText::_('COM_SECSIGNID_FE_4'); ?></h3>
 
             <div class="clear"></div>
+            <p><?php echo JText::_('COM_SECSIGNID_FE_5'); ?></p>
+            <a id="secsignid-learnmore" href="<?php echo JText::_('COM_SECSIGNID_LINK_MORE'); ?>" target="_blank"><?php echo JText::_('COM_SECSIGNID_FE_6'); ?></a>
 
-            <?php
-            $posttext = JComponentHelper::getParams('com_secsignid')->get('secsign_backend_posttext');
-            if ($posttext) {
-                echo "<p>" . $posttext . "</p>";
-            }
-            ?>
+            <img style="margin: 0 auto;width: 100%;display: block;max-width: 200px;" src="<?php echo JURI::base() ?>../media/com_secsignid/images/secsignhelp.png">
 
+            <a class="linktext" id="secsignid-info-secsignid" href="#"><?php echo JText::_('COM_SECSIGNID_FE_7'); ?></a>
+
+            <a style="color: #fff; text-decoration: none;" href="<?php echo JText::_('COM_SECSIGNID_LINK_HOW'); ?>" target="_blank"
+               id="secsignidapp1"><?php echo JText::_('COM_SECSIGNID_FE_8A'); ?></a>
+
+            <div class="clear"></div>
         </div>
-    <?php
-    }
-endif; ?>
+
+        <!-- Page Accesspass -->
+        <div id="secsignid-page-accesspass">
+            <div class="secsignidlogo"></div>
+
+            <div id="secsignid-accesspass-container">
+                <img id="secsignid-accesspass-img" src="<?php echo JURI::base() ?>../media/com_secsignid/images/preload.gif">
+            </div>
+
+            <div id="secsignid-accesspass-info">
+                <a href="#" class="infobutton" id="secsignid-questionbutton">Info</a>
+
+                <p class="accesspass-id"><?php echo JText::_('COM_SECSIGNID_FE_9'); ?> <b id="accesspass-secsignid"></b></p>
+
+                <div class="clear"></div>
+            </div>
+
+            <form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post" id="secsignid-accesspass-form">
+                <button  id="secsignid-cancelbutton" type="submit"><?php echo JText::_('COM_SECSIGNID_FE_10'); ?></button>
+
+                <!-- OK -->
+                <input type="hidden" name="check_authsession" id="check_authsession" value="1"/>
+                <input type="hidden" name="option" value="com_secsignid"/>
+                <input type="hidden" name="task" value="getAuthSessionState"/>
+
+                <!-- Cancel -->
+                <input type="hidden" name="cancel_authsession" id="cancel_authsession" value="1"/>
+                <input type="hidden" name="option" value="com_secsignid"/>
+                <input type="hidden" name="task" value="cancelAuthSession"/>
+
+                <!-- Values -->
+                <input type="hidden" name="return" value=""/>
+                <input type="hidden" name="secsigniduserid" value=""/>
+                <input type="hidden" name="secsignidauthsessionid" value=""/>
+                <input type="hidden" name="secsignidrequestid" value=""/>
+                <input type="hidden" name="secsignidservicename" value=""/>
+                <input type="hidden" name="secsignidserviceaddress" value=""/>
+                <input type="hidden" name="secsignidauthsessionicondata" value=""/>
+            </form>
+        </div>
+
+        <!-- Page Question SecSign Accesspass -->
+        <div id="secsignid-page-question">
+            <div class="secsignidlogo secsignidlogo-left"></div>
+            <h3 id="headingquestion"><?php echo JText::_('COM_SECSIGNID_FE_11'); ?></h3>
+
+            <div class="clear"></div>
+            <p><?php echo JText::_('COM_SECSIGNID_FE_12'); ?></p>
+            <ol>
+                <li><?php echo JText::_('COM_SECSIGNID_FE_13'); ?></li>
+                <li><?php echo JText::_('COM_SECSIGNID_FE_14'); ?></li>
+                <li><?php echo JText::_('COM_SECSIGNID_FE_15'); ?></li>
+                <li><?php echo JText::_('COM_SECSIGNID_FE_16'); ?></li>
+            </ol>
+
+            <a class="linktext" id="secsignid-question-secsignid" href="#"><?php echo JText::_('COM_SECSIGNID_FE_17'); ?></a>
+
+            <a style="color: #fff; text-decoration: none;" href="<?php echo JText::_('COM_SECSIGNID_LINK_TRYIT'); ?>" target="_blank" id="secsignidapp2"><?php echo JText::_('COM_SECSIGNID_FE_18'); ?></a>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
