@@ -35,3 +35,43 @@ More information is available at the Joomla extension site for SecSign ID at <ht
 Or have a look at the Joomla SecSign ID tutorial website at <https://www.secsign.com/joomla-tutorial/>
 
 For more detailed information about two-factor-authentication (2FA) or two-step-authentication please have a look at the SecSign blog entry <https://www.secsign.com/two-factor-authentication-vs-two-step-verification/>.
+
+## Changelog:
+
+### 1.6.1
+* updates component with editable SecSignID user list
+* global and user specific password deactivation
+* adds component permissions
+* new frontend options now in module instances
+* install script updates
+* improved compatibility with Joomla 2.5 and 3.x
+* language files updated
+
+### 1.5.2
+* improves component structure
+* new option for frontend layout
+* updated tutorial
+
+### 1.5.1
+* bugfix to prevent polling after an error
+* new version of SecSign ID js functions
+* language files and hyperlinks updated
+
+### 1.5
+* swapped all public css/js/img to media folder
+* deleted obsolete files
+* improved plugin design with use of js &amp; SecSign js Api to prevent page reloads and increase speed
+* updated user configuration options &amp; tutorial
+* skipped backend two step authentication for easier user configuration
+* language files updated
+
+### 1.4
+* supports Joomla 2.5 and 3.x
+* backend two step authentication
+* backend login with SecSign ID
+* updated user configuration options
+* tutorial in component menu
+* language files updated
+
+### 1.3
+* Initial release for Joomla 2.5
