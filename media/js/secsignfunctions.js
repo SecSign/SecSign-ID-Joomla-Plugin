@@ -1,18 +1,16 @@
-// $Id: secsignfunctions.js,v 1.5 2015/04/16 13:36:50 titus Exp $
-
 /**
  * This script contains general helper functions.
  * components menu of the back end is selected.
  *
- * @copyright    Copyright (C) 2014 SecSign Technologies Inc. All rights reserved.
- * @license        GNU General Public License version 2 or later; see LICENSE.txt.
+ * @copyright    Copyright (C) 2014 - 2016 SecSign Technologies Inc. All rights reserved.
+ * @license      GNU General Public License version 2 or later; see LICENSE.txt.
  */
 
 /*
  Joomla specific variables & paths
  */
 var secsignPreload = 'images/preload.gif';
-var secsignAPI = 'bridge/SecSignIDApi.js';
+var secsignAPI = 'SecSignIDApi/SecSignIDApi.js';
 var pwloginbutton = '#pwdloginbtn';
 var pwloginuser = '#login-user';
 var pwloginpw = '#login-pw';
@@ -79,7 +77,7 @@ function responsive(width) {
 }
 
 function frameOption(frame, backend) {
-    if (frame != 'frame' && !backend) {
+    if (frame!="true" && !backend) {
         jQuery("#secsignidplugin").css("padding", "0").css("box-shadow", "none");
     }
 }
@@ -368,7 +366,7 @@ jQuery(document).ready(function () {
 
                             //request auth session
                             var secsignid = jQuery("input[name='secsigniduserid']").val();
-                            var secSignIDApi = new SecSignIDApi({posturl: apiurl});
+                            var secSignIDApi = new SecSignIDApi({posturl: apiurl, pluginname: "joomla"});
                             secSignIDApi.requestAuthSession(secsignid, title, url, '', function rMap(responseMap) {
                                 if ("errormsg" in responseMap) {
                                     //back to login screen

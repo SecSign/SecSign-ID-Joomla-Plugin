@@ -1,22 +1,10 @@
-/**
- * $Id: secsignfunctionsBE.js,v 1.1 2015/04/16 13:33:36 titus Exp $
- * $Log: secsignfunctionsBE.js,v $
- * Revision 1.1  2015/04/16 13:33:36  titus
- * New version.
- *
- * Revision 1.3  2015/03/25 14:54:36  titus
- * New plugin version 1.3.
- *
- * Revision 1.2  2015/02/25 18:19:07  titus
- * Added cvs comments.
- */
 
 /*!
  * This script contains general helper functions.
  * components menu of the back end is selected.
  *
- * @copyright    Copyright (C) 2014 SecSign Technologies Inc. All rights reserved.
- * @license        GNU General Public License version 2 or later; see LICENSE.txt.
+ * @copyright    Copyright (C) 2014 - 2016 SecSign Technologies Inc. All rights reserved.
+ * @license      GNU General Public License version 2 or later; see LICENSE.txt.
  */
 
 

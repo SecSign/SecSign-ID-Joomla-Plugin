@@ -10,11 +10,11 @@
     <name>Backend Authentication - SecSignID</name>
     <author>SecSign Technologies Inc.</author>
     <creationDate>November 2014</creationDate>
-    <copyright>(C) 2011 - 2014 SecSign Technologies Inc. All rights reserved.</copyright>
+    <copyright>(C) 2011 - 2016 SecSign Technologies Inc. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@secsign.com</authorEmail>
     <authorUrl>www.secsign.com</authorUrl>
-    <version>1.1.0</version>
+    <version>1.2.1</version>
     <description>This plug-in allows users to authenticate against joomla admin backend using smart phone running SecSign App.</description>
 
 	<files>

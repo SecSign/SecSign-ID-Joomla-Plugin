@@ -4,7 +4,7 @@
 
 
 defined('_JEXEC') or die;
-include_once JPATH_PLUGINS . '/authentication/secsignidauth/SecSignIDApi.php';
+include_once JPATH_ROOT . '/media/com_secsignid/SecSignIDApi/phpApi/SecSignIDApi.php';
 jimport('joomla.application.component.helper');
 
 class plgSystemSecsignidbackend extends JPlugin

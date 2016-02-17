@@ -203,12 +203,10 @@ class plgUserSecSignIdProfile extends JPlugin
 
                     foreach($secsignid_array as $secsignid){
                         if(strlen($secsignid) > 0){
-                            //$tuples[] = '('.$userId.', '.$db->quote('secsignidprofile.'.$k).', '.$db->quote($v).', '.$order++.')';
                             $tuples[] = '('.$userId.', '.$db->quote($userName).', '.$db->quote($secsignid).')';
                         }
                     }
 
-                    // $db->setQuery('INSERT INTO #__user_profiles VALUES '.implode(', ', $tuples));
                     $db->setQuery('INSERT INTO #__secsignid_login VALUES '.implode(', ', $tuples));
 
                     if (!$db->query()) 

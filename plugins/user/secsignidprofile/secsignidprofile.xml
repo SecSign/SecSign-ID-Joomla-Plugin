@@ -12,11 +12,11 @@ Definition file for the SecSignID login module for Joomla 1.6.
     <name>User - Profile - SecSignID</name> <!-- translation of PLG_USER_PROFILE_SECSIGNID does not work here -->
     <author>SecSign Technologies Inc.</author>
     <creationDate>April 2013</creationDate>
-    <copyright>(C) 2011, 2012, 2013 SecSign Technologies Inc. All rights reserved.</copyright>
+    <copyright>(C) 2011 - 2016 SecSign Technologies Inc. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@secsign.com</authorEmail>
     <authorUrl>www.secsign.com/</authorUrl>
-    <version>1.0.3</version>
+    <version>1.4.1</version>
     <description>Allows users to assign a SecSign ID to their profile.</description> <!-- translation of PLG_USER_PROFILE_SECSIGNID_XML_DESCRIPTION does not work here -->
 
     <files>

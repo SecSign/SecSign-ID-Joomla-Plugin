@@ -254,7 +254,7 @@ if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strtolower($_SERVE
     var checkSessionStateTimerId = -1;
 
     function ajaxCheckForSessionState(){
-        var secSignIDApi = new SecSignIDApi({posturl:"<?php echo JUri::base(true)?>/modules/mod_secsignid_backend/bridge/signin-bridge.php"});
+        var secSignIDApi = new SecSignIDApi({posturl:"<?php echo JPATH_ROOT?>/media/com_secsignid/SecSignIDApi/phpApi/signin-bridge.php"});
         secSignIDApi.getAuthSessionState(
             '<?php echo $secsignid_params['secsignid'] ?>',
             '<?php echo $secsignid_params['requestid'] ?>',

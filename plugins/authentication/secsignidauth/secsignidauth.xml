@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-// $Id: secsignidauth.xml,v 1.7 2015/04/16 13:36:50 titus Exp $
+// $Id: secsignidauth.xml,v 1.4 2014/12/15 16:37:41 titus Exp $
 
 Definition file for the SecSignID authentication plug-in for Joomla 1.6.
 
@@ -11,18 +11,16 @@ Definition file for the SecSignID authentication plug-in for Joomla 1.6.
     <name>Authentication - SecSignID</name> <!-- translation of PLG_AUTH_SECSIGNID does not work here -->
     <author>SecSign Technologies Inc.</author>
     <creationDate>April 2013</creationDate>
-    <copyright>(C) 2011 - 2014 SecSign Technologies Inc. All rights reserved.</copyright>
+    <copyright>(C) 2011 - 2016 SecSign Technologies Inc. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@secsign.com</authorEmail>
     <authorUrl>www.secsign.com</authorUrl>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <description>This plug-ins allows users to authenticate using smart phone running SecSign App.</description>
     <!-- <description>PLG_AUTH_SECSIGNID_XML_DESCRIPTION</description> --> <!-- translation of PLG_AUTH_SECSIGNID_XML_DESCRIPTION does not work here -->
 
     <files>
         <filename plugin="secsignidauth">secsignidauth.php</filename>
-        <filename>SecSignIDApi.php</filename>
-        <filename>curl-ca-bundle.crt</filename>
         <filename>index.html</filename>
     </files>
 

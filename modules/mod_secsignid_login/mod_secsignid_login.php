@@ -1,12 +1,12 @@
 <?php
-// $Id: mod_secsignid_login.php,v 1.3 2015/04/16 13:36:50 titus Exp $
+// $Id: mod_secsignid_login.php,v 1.2 2014/12/01 15:04:28 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
 jimport('joomla.application.component.helper');
 
 /**
- * SecSign ID login module. 
+ * SecSign ID login module.
  * Asks the user for his SecSign ID, displays the authentication acces pass created by the SecPKI server and
  * waits for the user to confirm/accept the authentication session.
  *
@@ -20,26 +20,29 @@ require_once dirname(__FILE__).'/helper.php';
 // include the default Joomla 1.6.3 mod_login once
 require_once dirname(__FILE__).'/../mod_login/helper.php';
 
-//$params->def('greeting', 1);
+//login logout redirects
+$document = JFactory::getDocument();
+$app = JFactory::getApplication();
+$user	= JFactory::getUser();
 
-// ask the default Joomla 1.6.3 mod_login
 $type	= modLoginHelper::getType();
-$return	= modLoginHelper::getReturnURL($params, $type);
-$secsignLogin = JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_login');
-$secsignLogout = JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_logout');
-$secsignSecure = JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_secure');
+$menu = $app->getMenu();
+
+$secsignLoginParam = $params->get('secsign_frontend_login', "");
+$secsignLogoutParam = $params->get('secsign_frontend_logout', "");
+$secsignSecure = $params->get('secsign_frontend_secure', "");
+$secsignLogin = $menu->getItem($secsignLoginParam)->link;
+$secsignLogout = $menu->getItem($secsignLogoutParam)->link;
+$return = JURI::current();
 
 if ($type == 'logout' && $secsignLogout){
-    $url = JRoute::_('index.php?Itemid=' . $secsignLogout, true, $secsignSecure);
-    $return = urlencode(base64_encode($url));
+    $return = JURI::base().$secsignLogout;
 } elseif($secsignLogin) {
-    $url = JRoute::_('index.php?Itemid=' . $secsignLogin, true, $secsignSecure);
-    $return = urlencode(base64_encode($url));
+    $return = JURI::base().$secsignLogin;
 }
 
-// ask the application
-$user	= JFactory::getUser();
-$app    = JFactory::getApplication();
+//current URL if error etc.
+$currentUrl = JURI::current();
 
 // the component com_secsignid will store an array in user state 'secsignid.login.params'
 $secsignid_params = $app->getUserState('secsignid.login.params');

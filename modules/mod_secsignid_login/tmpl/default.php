@@ -1,5 +1,5 @@
 <?php
-// $Id: default.php,v 1.15 2015/04/16 13:36:50 titus Exp $
+// $Id: default.php,v 1.9 2015/01/08 17:36:09 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -17,26 +17,47 @@ jimport('joomla.application.component.helper');
 
 JHtml::_('behavior.keepalive');
 // check whether jquery is available
-if (!JFactory::getApplication()->get('jquery')) {
-    JFactory::getApplication()->set('jquery', true);
-    $document = JFactory::getDocument();
-    $document->addScript(JURI::root() . "media/com_secsignid/js/2.1.1.jquery.min.js");
+if (version_compare(JVERSION, '3.0', '<'))
+{
+    if (JFactory::getApplication()->get('jquery') !== true)
+    {
+        // Load jQuery in no conflict mode with B/C support
+        JHtml::script(JUri::root() . 'media/com_secsignid/js/2.1.1.jquery.min.js');
+        JHtml::script(JUri::root() . 'media/com_secsignid/js/jquery-migrate-1.2.1.min.js');
+        //JHtml::script(JUri::root() . 'media/com_secsignid/js/jquery-noconflict.js');
+        JFactory::getApplication()->set('jquery', true);
+    }
+}
+else
+{
+    JHtml::_('jquery.framework');
 }
 /**
  * add module own CSS stylesheet & js files
  */
 $document = JFactory::getDocument();
+$app = JFactory::getApplication();
+$title = $document->getTitle();
+
+$secsignLoginParam = $params->get('secsign_frontend_login', "");
+$secsignLogoutParam = $params->get('secsign_frontend_logout', "");
+$secsignSecure = $params->get('secsign_frontend_secure', "");
+
+$menu = $app->getMenu();
+$secsignLogin = JURI::base().$menu->getItem($secsignLoginParam)->link;
+$secsignLogout = JURI::base().$menu->getItem($secsignLogoutParam)->link;
+
 $document->addScriptDeclaration('
     //Parameters
     var url = "";
-    var title = "'.JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_servicename').'";
+    var title = "'.$params->get('secsign_frontend_servicename', $title).'";
     var secsignPluginPath = "'.JURI::base().'media/com_secsignid/";
-    var apiurl = "'.JURI::base().'media/com_secsignid/bridge/signin-bridge.php";
+    var apiurl = "'.JURI::base().'media/com_secsignid/SecSignIDApi/signin-bridge.php";
     var errormsg = "'.JText::_('COM_SECSIGNID_FE_20').'";
     var noresponse = "'.JText::_('COM_SECSIGNID_FE_21').'";
     var nosecsignid = "'.JText::_('COM_SECSIGNID_FE_19').'";
     var secsignid = "";
-    var frameoption = "";
+    var frameoption = "'.$params->get('secsign_frontend_layout', "").'";
 
     if (url == "") {
         url = document.URL;
@@ -47,14 +68,16 @@ $document->addScriptDeclaration('
     if (typeof backend == "undefined") {
         var backend = false;
     }
+
+    if (!window.jQuery) {
+        console.log("jQuery is not available");
+    }
 ');
 JHtml::_('stylesheet', JUri::base() . 'media/com_secsignid/css/secsignid_layout.css');
-JHtml::_('script', JUri::base() . 'media/com_secsignid/bridge/SecSignIDApi.js');
-JHtml::_('script', JUri::base() . 'media/com_secsignid/bridge/secsignfunctions.js');
+JHtml::_('script', JUri::base() . 'media/com_secsignid/SecSignIDApi/SecSignIDApi.js');
+JHtml::_('script', JUri::base() . 'media/com_secsignid/js/secsignfunctions.js');
 $view = JRequest::getVar('view', 0);
 ?>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 <?php
 //show php or joomla error message for secsign
@@ -77,22 +100,18 @@ $session->set('secsignerror', "");
                href="https://www.secsign.com/support/" target="_blank">SecSign Support</a>
         </noscript>
         <div style="display:none;" id="secsignidplugin">
-            <!-- Page Login -->
+            <!-- Page Logout -->
             <div id="secsignid-page-logout">
                 <div class="secsignidlogo"></div>
                 <div id="secsignid-error"></div>
-                <form action="<?php
-                $secsignLogout = JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_logout');
-                $secsignSecure = JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_secure');
-                $url = JRoute::_('index.php?Itemid=' . $secsignLogout, true, $secsignSecure);
-                echo $url;?>"
+                <form action="<?php echo $currentUrl;?>"
                       method="post"
                       id="login-form-secsignid">
 
 
                     <?php
-                    $secsignGreeting = JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_greeting');
-                    $secsigName = JComponentHelper::getParams('com_secsignid')->get('secsign_frontend_name');
+                    $secsignGreeting = $params->get('secsign_frontend_greeting', "");
+                    $secsigName = $params->get('secsign_frontend_name', "");
 
                     if ($secsignGreeting) : ?>
                         <div class="login-greeting secsignid_login">
@@ -109,7 +128,7 @@ $session->set('secsignerror', "");
                     <button id="seclogoutbtn" type="submit"><?php echo JText::_('JLOGOUT'); ?></button>
                     <input type="hidden" name="option" value="com_users"/>
                     <input type="hidden" name="task" value="user.logout"/>
-                    <input type="hidden" name="return" value="<?php echo $return; ?>"/>
+                    <input type="hidden" name="return" value="<?php echo base64_encode($return);?>"/>
                     <?php echo JHtml::_('form.token'); ?>
                 </form>
 
@@ -135,7 +154,7 @@ $session->set('secsignerror', "");
                 <form id="secsignid-loginform">
                     <div class="form-group">
                         <input type="text" class="form-control login-field" value="" placeholder="SecSign ID"
-                               id="login-secsignid" name="secsigniduserid">
+                               id="login-secsignid" name="secsigniduserid" autocapitalize="off" autocorrect="off">
                         <label class="login-field-icon fui-user" for="login-secsignid"></label>
                     </div>
 
@@ -158,19 +177,19 @@ $session->set('secsignerror', "");
             <!-- Page Password Login -->
             <div id="secsignid-page-pw">
                 <div class="secsignidlogo"></div>
-                <form action="" method="post" id="login-form">
+                <form action="<?php echo $currentUrl;?>" method="post" id="login-form">
                     <div class="form-group">
                         <input  id="login-user" type="text" name="username" class="form-control login-field" tabindex="0"
-                               size="18" placeholder="Username">
+                                size="18" placeholder="Username" autocapitalize="off" autocorrect="off">
                     </div>
                     <div class="form-group">
                         <input  id="login-pw" type="password" name="password" class="form-control login-field" tabindex="0"
-                               size="18" placeholder="Password">
+                                size="18" placeholder="Password" autocapitalize="off" autocorrect="off">
                     </div>
                     <button type="submit" tabindex="0" name="Submit" id="pwdloginbtn">Log in</button>
                     <input type="hidden" name="option" value="com_users">
                     <input type="hidden" name="task" value="user.login">
-                    <input type="hidden" name="return" value="<?php echo $return; ?>">
+                    <input type="hidden" name="return" value="<?php echo base64_encode($return);?>">
                     <?php echo JHtml::_('form.token'); ?>
                 </form>
 

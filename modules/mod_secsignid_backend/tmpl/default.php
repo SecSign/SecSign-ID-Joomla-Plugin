@@ -1,5 +1,5 @@
 <?php
-// $Id: default.php,v 1.12 2015/04/16 13:36:50 titus Exp $
+// $Id: default.php,v 1.6 2015/01/08 17:36:09 titus Exp $
 
 // no direct access
 defined('_JEXEC') or die;
@@ -24,7 +24,7 @@ JHtml::_('behavior.keepalive');
     var url = "";
     var title = "<?php echo JComponentHelper::getParams('com_secsignid')->get('secsign_backend_servicename'); ?>";
     var secsignPluginPath = '<?php echo JURI::base() ?>../media/com_secsignid/';
-    var apiurl = '<?php echo JURI::base() ?>../media/com_secsignid/bridge/signin-bridge.php';
+    var apiurl = '<?php echo JURI::base() ?>../media/com_secsignid/SecSignIDApi/signin-bridge.php';
     var errormsg = "<?php echo JText::_('COM_SECSIGNID_FE_20'); ?>";
     var noresponse = "<?php echo JText::_('COM_SECSIGNID_FE_21'); ?>";
     var nosecsignid = "<?php echo JText::_('COM_SECSIGNID_FE_19'); ?>";
@@ -38,8 +38,8 @@ JHtml::_('behavior.keepalive');
 // add public CSS stylesheet and JS files
 $document = JFactory::getDocument();
 JHtml::_('stylesheet', JUri::base() . '../media/com_secsignid/css/secsignid_layout.css');
-JHtml::_('script', JUri::base() . '../media/com_secsignid/bridge/SecSignIDApi.js');
-JHtml::_('script', JUri::base() . '../media/com_secsignid/bridge/secsignfunctionsBE.js');
+JHtml::_('script', JUri::base() . '../media/com_secsignid/SecSignIDApi/SecSignIDApi.js');
+JHtml::_('script', JUri::base() . '../media/com_secsignid/js/secsignfunctionsBE.js');
 $view = JRequest::getVar('view', 0);
 ?>
 
@@ -49,7 +49,7 @@ $view = JRequest::getVar('view', 0);
 jQuery.noConflict();
 
 //Load SecSignID API
-jQuery.getScript(secsignPluginPath+"bridge/SecSignIDApi.js", function () {
+jQuery.getScript(secsignPluginPath+"SecSignIDApi/SecSignIDApi.js", function () {
 
     //hide Joomla Logins
     jQuery("#element-box").css('display','none');
@@ -385,7 +385,7 @@ $session->set('secsignerror', "");
             <form id="secsignid-loginform">
                 <div class="form-group">
                     <input type="text" class="form-control login-field" value="" placeholder="SecSign ID"
-                           id="login-secsignid" name="secsigniduserid">
+                           id="login-secsignid" name="secsigniduserid" autocapitalize="off" autocorrect="off">
                     <label class="login-field-icon fui-user" for="login-secsignid"></label>
                 </div>
 
@@ -411,13 +411,13 @@ $session->set('secsignerror', "");
             <form>
                 <div class="form-group">
                     <input type="text" class="form-control login-field" value="" placeholder="Username"
-                           id="login-user">
+                           id="login-user" autocapitalize="off" autocorrect="off">
                     <label class="login-field-icon fui-user" for="login-secsignid"></label>
                 </div>
 
                 <div class="form-group">
                     <input type="password" class="form-control login-field" value="" placeholder="Password"
-                           id="login-pw">
+                           id="login-pw" autocapitalize="off" autocorrect="off">
                     <label class="login-field-icon fui-user" for="login-secsignid"></label>
                 </div>
                 <button id="pwdloginbtn" type="submit">Log in</button>

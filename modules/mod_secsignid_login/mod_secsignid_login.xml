@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-// $Id: mod_secsignid_login.xml,v 1.11 2015/04/16 13:36:50 titus Exp $
+// $Id: mod_secsignid_login.xml,v 1.8 2015/01/08 17:36:13 titus Exp $
 
 Definition file for the SecSignID login module for Joomla 3.x
 
@@ -8,14 +8,15 @@ Definition file for the SecSignID login module for Joomla 3.x
 * @license        GNU General Public License version 2 or later; see LICENSE.txt.
 -->
 <extension type="module" version="1.4.0" client="site" method="upgrade">
-    <name>SecSign ID Login</name> <!-- translation of MOD_SECSIGNID_LOGIN does work here -->
+    <name>SecSign ID Login</name>
+    <!-- translation of MOD_SECSIGNID_LOGIN does work here -->
     <author>SecSign Technologies Inc.</author>
     <creationDate>April 2013</creationDate>
-    <copyright>(C) 2011 - 2015 SecSign Technologies Inc. All rights reserved.</copyright>
+    <copyright>(C) 2011 - 2016 SecSign Technologies Inc. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@secsign.com</authorEmail>
     <authorUrl>www.secsign.com</authorUrl>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
     <description>MOD_SECSIGNID_LOGIN_XML_DESCRIPTION</description>
     <files>
         <filename module="mod_secsignid_login">mod_secsignid_login.php</filename>
@@ -32,4 +33,81 @@ Definition file for the SecSignID login module for Joomla 3.x
     </languages>
 
 
+    <config>
+        <fields name="params">
+            <fieldset
+                    name="COM_SECSIGNID"
+                    label="COM_SECSIGNID_TAB_FRONTEND">
+
+                <field
+                        name="secsign_frontend_servicename"
+                        type="text"
+                        default=""
+                        label="COM_SECSIGNID_BACKEND_SERVICENAME"
+                        description="COM_SECSIGNID_BACKEND_SERVICENAME_DESC"
+                        />
+
+                <field
+                        name="secsign_frontend_login"
+                        type="menuitem"
+                        disable="separator"
+                        label="COM_SECSIGNID_LOGIN_FIELD_LOGIN_REDIRECTURL_LABEL"
+                        description="COM_SECSIGNID_LOGIN_FIELD_LOGIN_REDIRECTURL_DESC">
+                    <option
+                            value="">JDEFAULT
+                    </option>
+                </field>
+                <field
+                        name="secsign_frontend_logout"
+                        type="menuitem"
+                        disable="separator"
+                        label="COM_SECSIGNID_LOGIN_FIELD_LOGOUT_REDIRECTURL_LABEL"
+                        description="COM_SECSIGNID_LOGIN_FIELD_LOGOUT_REDIRECTURL_DESC">
+                    <option
+                            value="">JDEFAULT
+                    </option>
+                </field>
+                <field
+                        name="secsign_frontend_layout"
+                        type="list"
+                        default="true"
+                        label="COM_SECSIGNID_LOGIN_LAYOUT"
+                        description="COM_SECSIGNID_LOGIN_LAYOUT_DESC">
+                    <option
+                            value="true">COM_SECSIGNID_LOGIN_LAYOUT_FRAME
+                    </option>
+                    <option
+                            value="false">COM_SECSIGNID_LOGIN_LAYOUT_NOFRAME
+                    </option>
+                </field>
+                <field
+                        name="secsign_frontend_greeting"
+                        type="radio"
+                        class="btn-group btn-group-yesno"
+                        default="1"
+                        label="COM_SECSIGNID_LOGIN_FIELD_GREETING_LABEL"
+                        description="COM_SECSIGNID_LOGIN_FIELD_GREETING_DESC">
+                    <option
+                            value="0">JNo
+                    </option>
+                    <option
+                            value="1">JYes
+                    </option>
+                </field>
+                <field
+                        name="secsign_frontend_name"
+                        type="list"
+                        default="0"
+                        label="COM_SECSIGNID_LOGIN_FIELD_NAME_LABEL"
+                        description="COM_SECSIGNID_LOGIN_FIELD_NAME_DESC">
+                    <option
+                            value="0">COM_SECSIGNID_LOGIN_VALUE_NAME
+                    </option>
+                    <option
+                            value="1">COM_SECSIGNID_LOGIN_VALUE_USERNAME
+                    </option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
 </extension>

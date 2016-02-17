@@ -301,7 +301,6 @@ Blue: #599fcb
 
 /* Responsive */
 
-
 #secsignidplugin.miniview .secsignidlogo, noscript .secsignidlogo{
     width: 55px;
     height: 55px;
@@ -343,10 +342,6 @@ Blue: #599fcb
     padding-top: 10px !important;
 }
 
-
-
-
-
 #secsignidplugin input[type="checkbox"]:checked+label:before{
     display:none;
 }
@@ -354,8 +349,6 @@ Blue: #599fcb
 #secsignidplugin input[type="checkbox"]:checked+label:after{
     display:none;
 }
-
-
 
 /* Link on Joomla Login Screen */
 #form-login #secsignid-login-secsignid{

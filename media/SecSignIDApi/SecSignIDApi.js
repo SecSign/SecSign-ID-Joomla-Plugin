@@ -1,6 +1,3 @@
-// $Id: SecSignIDApi.js,v 1.26 2015/04/09 13:51:54 titus Exp $
-
-
 /*!
  * (c) 2014, 2015 SecSign Technologies Inc.
  */

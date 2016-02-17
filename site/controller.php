@@ -16,7 +16,7 @@ jimport('joomla.error.log');
 jimport('joomla.log.log');
 jimport('joomla.application.component.helper');
 
-include_once JPATH_BASE . '/plugins/authentication/secsignidauth/SecSignIDApi.php';
+include_once JPATH_ROOT . '/media/com_secsignid/SecSignIDApi/phpApi/SecSignIDApi.php';
 
 /**
  * SecSign ID component controller that will request an auth session for a given SecSign ID
@@ -37,22 +37,19 @@ class SecSignIdController extends JControllerLegacy
         parent::display($cachable = false, $urlparams = false);
     }
 
-
     /**
      * Method to cancel auth session and log out a user.
      */
     public function cancelAuthSession()
     {
         JRequest::checkToken('post') or jexit(JText::_('JInvalid_Token'));
-
         $app = JFactory::getApplication();
 
         // open the log file
         JLog::addLogger(array('text_file' => 'secsign.log'));
 
         // Populate the data array:
-        $data = array();
-        $data['return'] = base64_decode(JRequest::getVar('return', '', 'POST', 'BASE64'));
+        $data = JRequest::get( 'post' );
         // get the HTTP get parameters which were set by the SecSign ID login form module
         $authSessionId = JRequest::getVar('secsignidauthsessionid', NULL, 'post', 'STRING');
         $secSignId = JRequest::getVar('secsigniduserid', NULL, 'post', 'STRING');
@@ -117,7 +114,6 @@ class SecSignIdController extends JControllerLegacy
     public function getAuthSessionState()
     {
         JRequest::checkToken('post') or jexit(JText::_('JInvalid_Token'));
-
         $app = JFactory::getApplication();
 
         // open the log file
@@ -125,8 +121,12 @@ class SecSignIdController extends JControllerLegacy
 
         // Populate the data array:
         $secsignidlogin_params = array();
-        $data = array();
-        $data['return'] = base64_decode(JRequest::getVar('return', '', 'POST', 'BASE64'));
+        $data = JRequest::get( 'post' );
+
+        // Set the return URL if empty.
+        if (empty($data['return'])) {
+            $data['return'] = JURI::base();
+        }
 
         // get the HTTP get parameters which were set by the SecSign ID login form module
         $authSessionId = JRequest::getVar('secsignidauthsessionid', NULL, 'post', 'STRING');
@@ -160,7 +160,6 @@ class SecSignIdController extends JControllerLegacy
         if (!$secSignIDApi->prerequisite()) {
             $app->setUserState('secsignid.login.params', array('error' => 'SecSign ID plugin error: the php extension \'curl\' is not installed or enabled. Please install or enable \'curl\' before you can use SecSign ID.'));
             JLog::add('SecSign ID plugin error: the php extension \'curl\' is not installed or enabled. Please install or enable \'curl\' before you can use SecSign ID.', JLog::WARNING, 'secsign');
-
             return;
         }
 
@@ -235,10 +234,7 @@ class SecSignIdController extends JControllerLegacy
 
             $data['authenticatedSecSignID'] = $secSignId; //$authSession->getSecSignID();
 
-            // Set the return URL if empty.
-            if (empty($data['return'])) {
-                $data['return'] = 'index.php?option=com_users&view=profile';
-            }
+
 
             // Get the log in options.
             $options = array();
